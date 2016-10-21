@@ -16,7 +16,7 @@ echo ===
 [ "$TRAVIS_REPO_SLUG" == rsp/$n ] || skip "in repo $TRAVIS_REPO_SLUG"
 [ "$TRAVIS_BRANCH" == master ] || skip "on branch $TRAVIS_BRANCH"
 [ "$NPM_AUTH" == "" ] && skip "without NPM_AUTH"
-[ -f ~/.npmrc ] && skip "with ~/.npmrc already present"
+[ -f ~/.npmrc-bak ] && skip "with ~/.npmrc-bak already present"
 
 u=https://registry.npmjs.org/$n/$v
 s=`curl -s -o /dev/null -w "%{http_code}" $u`
@@ -26,9 +26,11 @@ if [ "$s" == 200 ]; then
   exit 0
 elif [ "$s" == 404 ]; then
   echo "Publishing $n@$v ..."
-  echo "$NPM_AUTH" > ~/.npmrc
+  [ -f ~/.npmrc ] && mv -v ~/.npmrc ~/.npmrc-bak
+  echo -e "spin=false\nprogress=false\n$NPM_AUTH" > ~/.npmrc
   npm publish
   rm -fv ~/.npmrc
+  [ -f ~/.npmrc ] && mv -v ~/.npmrc-bak ~/.npmrc
 else
   echo "Unexpected registry status code: $s"
   exit 1
