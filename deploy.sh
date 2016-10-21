@@ -8,6 +8,10 @@ n=`node -e 'console.log(require("./index").name)'`
 v=`node -e 'console.log(require("./index").version)'`
 echo "Deployment of $n@$v"
 
+echo ===
+cat ~/.npmrc
+echo ===
+
 [ "$TRAVIS" == true ] || skip "not in Travis"
 [ "$TRAVIS_REPO_SLUG" == rsp/$n ] || skip "in repo $TRAVIS_REPO_SLUG"
 [ "$TRAVIS_BRANCH" == master ] || skip "on branch $TRAVIS_BRANCH"
