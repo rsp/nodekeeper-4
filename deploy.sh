@@ -8,7 +8,7 @@ echo "Usage: travis-npm-publish [USER] [BRANCH]"
 
 user=$1
 branch=$2
-[ "$branch" == "" ] && branch=master
+[ "$branch" == "" ] && branch=tags
 
 [ "$user" == "" ] \
   && echo "Publishing for all github users" \
