@@ -6,7 +6,12 @@ echo "`date -Is` Starting travis-npm-publish-branch"
 echo -e "Using npm config:\n${npm_config// /\n}"
 
 skip() {
-    echo "Skipping deployment" $1; exit 0
+  echo "Skipping deployment" $1; exit 0
+}
+commands() {
+  for c in $@; do
+    command -v $c >/dev/null 2>&1 || skip "without $c"
+  done
 }
 
 n=`node -e 'console.log(require("./package.json").name)'`
@@ -18,6 +23,8 @@ echo "Deployment of $n@$v"
 [ "$TRAVIS_BRANCH" == master ] || skip "on branch $TRAVIS_BRANCH"
 [ "$NPM_AUTH" == "" ] && skip "without NPM_AUTH"
 [ -f ~/.npmrc-bak ] && skip "with ~/.npmrc-bak already present"
+[ -f package.json ] && skip "without package.json"
+commands node npm testing curl
 
 u=https://registry.npmjs.org/$n/$v
 s=`curl -s -o /dev/null -w "%{http_code}" $u`
