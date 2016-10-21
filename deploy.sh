@@ -11,7 +11,7 @@ echo "Deployment of $n@$v"
 [ "$TRAVIS" == true ] || skip "not in Travis"
 [ "$TRAVIS_REPO_SLUG" == rsp/$n ] || skip "in repo $TRAVIS_REPO_SLUG"
 [ "$TRAVIS_BRANCH" == master ] || skip "on branch $TRAVIS_BRANCH"
-[ "$NPM_AUTH_TOKEN" == "" ] && skip "without NPM_AUTH_TOKEN"
+[ "$NPM_AUTH" == "" ] && skip "without NPM_AUTH"
 [ -f ~/.npmrc ] && skip "with ~/.npmrc already present"
 
 u=https://registry.npmjs.org/$n/$v
@@ -22,7 +22,7 @@ if [ "$s" == 200 ]; then
   exit 0
 elif [ "$s" == 404 ]; then
   echo "Publishing $n@$v ..."
-  echo "//registry.npmjs.org/:_authToken=$NPMTOKEN" > ~/.npmrc
+  echo "$NPM_AUTH" > ~/.npmrc
   npm publish
   rm -fv ~/.npmrc
 else
