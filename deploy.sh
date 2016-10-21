@@ -11,6 +11,8 @@ echo "Deployment of $n@$v"
 [ "$TRAVIS" == true ] || skip "not in Travis"
 [ "$TRAVIS_REPO_SLUG" == rsp/$n ] || skip "in repo $TRAVIS_REPO_SLUG"
 [ "$TRAVIS_BRANCH" == master ] || skip "on branch $TRAVIS_BRANCH"
+[ "$NPM_AUTH_TOKEN" == "" ] && skip "without NPM_AUTH_TOKEN"
+[ -f ~/.npmrc ] && skip "with ~/.npmrc already present"
 
 u=https://registry.npmjs.org/$n/$v
 s=`curl -s -o /dev/null -w "%{http_code}" $u`
@@ -22,6 +24,7 @@ elif [ "$s" == 404 ]; then
   echo "Publishing $n@$v ..."
   echo "//registry.npmjs.org/:_authToken=$NPMTOKEN" > ~/.npmrc
   npm publish
+  rm -fv ~/.npmrc
 else
   echo "Unexpected registry status code: $s"
   exit 1
