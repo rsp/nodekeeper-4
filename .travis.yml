@@ -1,9 +1,4 @@
 language: node_js
 node_js: 4
 script: npm test
-deploy:
-  on:
-    repo: rsp/nodekeeper-4
-    branch: master
-  provider: script
-  script: deploy.sh
+post_success: sh deploy.sh
