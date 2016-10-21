@@ -9,7 +9,7 @@ v=`node -e 'console.log(require("./index").version)'`
 echo "Deployment of $n@$v"
 
 [ "$TRAVIS" == true ] || skip "not in Travis"
-[ "$TRAVIS_REPO_SLUG" == rsp/$name ] || skip "in repo $TRAVIS_REPO_SLUG"
+[ "$TRAVIS_REPO_SLUG" == rsp/$n ] || skip "in repo $TRAVIS_REPO_SLUG"
 [ "$TRAVIS_BRANCH" == master ] || skip "on branch $TRAVIS_BRANCH"
 
 u=https://registry.npmjs.org/$n/$v
