@@ -15,7 +15,7 @@ branch=$2
   || echo "Publishing only for github user $user"
 
 [ "$branch" == "tags" ] \
-  && echo "Publishing builds with git tags" \
+  && echo "Publishing builds with git tags that match version in package.json" \
   || echo "Publishing builds on branch $branch"
 
 echo -e "Using npm config:\n${npm_config// /\n}"
