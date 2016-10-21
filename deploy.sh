@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 [ "$TRAVIS" == true ] || echo "Skipping deployment" && exit 1
 
