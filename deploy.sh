@@ -10,6 +10,7 @@ echo "Deployment of $n@$v"
 
 u=https://registry.npmjs.org/$n/$v
 s=`curl -s -o /dev/null -w "%{http_code}" $u`
+echo "$u ($s)"
 if [ "$s" == 200 ]; then
   echo "$n@$v is already published"
   exit 0
