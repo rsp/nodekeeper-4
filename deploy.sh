@@ -5,6 +5,7 @@ npm_config="spin=false progress=false color=false"
 echo "Starting travis-npm-publish"
 echo "Usage: travis-npm-publish [USER] [BRANCH]"
 
+
 user=$1
 branch=$2
 [ "$branch" == "" ] && branch=master
