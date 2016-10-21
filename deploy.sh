@@ -32,10 +32,15 @@ n=`node -e 'console.log(require("./package.json").name)'`
 v=`node -e 'console.log(require("./package.json").version)'`
 echo "Deployment of $n@$v"
 [ "$TRAVIS" == true ] || skip "not in Travis"
-[ "$TRAVIS_PULL_REQUEST" == false ] || skip "for pull request"
-[ "$TRAVIS_REPO_SLUG" == rsp/$n ] || skip "in repo $TRAVIS_REPO_SLUG"
-[ "$TRAVIS_BRANCH" == master ] || skip "on branch $TRAVIS_BRANCH"
 [ "$NPM_AUTH" == "" ] && skip "without NPM_AUTH"
+[ "$TRAVIS_PULL_REQUEST" == false ] || skip "for pull request"
+
+if [ "$branch" == "tag" ]; then
+  [ "TEST${TRAVIS_TAG//v/}" == $v ] || skip "for tag $TRAVIS_TAG"
+else
+  [ "$TRAVIS_BRANCH" == "$branch" ] || skip "on branch $TRAVIS_BRANCH"
+fi
+# [ "$TRAVIS_REPO_SLUG" == rsp/$n ] || skip "in repo $TRAVIS_REPO_SLUG"
 
 u=https://registry.npmjs.org/$n/$v
 s=`curl -s -o /dev/null -w "%{http_code}" $u`
