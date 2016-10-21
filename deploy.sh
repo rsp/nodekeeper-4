@@ -10,8 +10,8 @@ case $1 in
   *) branch=$1;;
 esac
 
-[ "$branch" == "tag" ] \\
-  && echo "Deploying tagged builds" \\
+[ "$branch" == "tag" ] \
+  && echo "Deploying builds with git tags" \
   || echo "Deploying builds on branch $branch"
 
 echo -e "Using npm config:\n${npm_config// /\n}"
