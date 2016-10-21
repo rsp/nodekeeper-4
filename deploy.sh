@@ -19,9 +19,9 @@ if [ "$s" == 200 ]; then
   echo "$n@$v is already published"
   exit 0
 elif [ "$s" == 404 ]; then
-  echo "Unexpected registry status code: $s"
-  exit 1
-else
   echo "Publishing $n@$v ..."
   NPM_API_KEY=$NPMTOKEN npm publish
+else
+  echo "Unexpected registry status code: $s"
+  exit 1
 fi
