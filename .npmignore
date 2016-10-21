@@ -1,4 +1,6 @@
+.*
 .git
 .travis.yml
+.npmignore
 node_modules
 deploy.sh
