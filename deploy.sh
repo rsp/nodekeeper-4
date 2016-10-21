@@ -14,17 +14,16 @@ commands() {
   done
 }
 
+commands node npm testing curl
+[ -f ~/.npmrc-bak ] && skip "with ~/.npmrc-bak already present"
+[ -f package.json ] || skip "without package.json"
 n=`node -e 'console.log(require("./package.json").name)'`
 v=`node -e 'console.log(require("./package.json").version)'`
 echo "Deployment of $n@$v"
-
 [ "$TRAVIS" == true ] || skip "not in Travis"
 [ "$TRAVIS_REPO_SLUG" == rsp/$n ] || skip "in repo $TRAVIS_REPO_SLUG"
 [ "$TRAVIS_BRANCH" == master ] || skip "on branch $TRAVIS_BRANCH"
 [ "$NPM_AUTH" == "" ] && skip "without NPM_AUTH"
-[ -f ~/.npmrc-bak ] && skip "with ~/.npmrc-bak already present"
-[ -f package.json ] && skip "without package.json"
-commands node npm testing curl
 
 u=https://registry.npmjs.org/$n/$v
 s=`curl -s -o /dev/null -w "%{http_code}" $u`
