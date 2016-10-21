@@ -20,7 +20,8 @@ if [ "$s" == 200 ]; then
   exit 0
 elif [ "$s" == 404 ]; then
   echo "Publishing $n@$v ..."
-  NPM_API_KEY=$NPMTOKEN npm publish
+  echo "//registry.npmjs.org/:_authToken=$NPMTOKEN" > ~/.npmrc
+  npm publish
 else
   echo "Unexpected registry status code: $s"
   exit 1
