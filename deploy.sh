@@ -2,7 +2,18 @@
 
 npm_config="spin=false progress=false color=false"
 
-echo "Starting travis-npm-publish-branch"
+echo "Starting travis-npm-publish"
+
+case $1 in
+  "") branch=master;;
+  "tag") branch=tag;;
+  *) branch=$1;;
+esac
+
+[ "$branch" == "tag" ] \\
+  && echo "Deploying tagged builds" \\
+  || echo "Deploying builds on branch $branch"
+
 echo -e "Using npm config:\n${npm_config// /\n}"
 
 skip() {
@@ -21,6 +32,7 @@ n=`node -e 'console.log(require("./package.json").name)'`
 v=`node -e 'console.log(require("./package.json").version)'`
 echo "Deployment of $n@$v"
 [ "$TRAVIS" == true ] || skip "not in Travis"
+[ "$TRAVIS_PULL_REQUEST" == false ] || skip "for pull request"
 [ "$TRAVIS_REPO_SLUG" == rsp/$n ] || skip "in repo $TRAVIS_REPO_SLUG"
 [ "$TRAVIS_BRANCH" == master ] || skip "on branch $TRAVIS_BRANCH"
 [ "$NPM_AUTH" == "" ] && skip "without NPM_AUTH"
@@ -37,7 +49,7 @@ elif [ "$s" == 404 ]; then
   echo -e "${npm_config// /\n}\n$NPM_AUTH" > ~/.npmrc
   npm publish
   rm -fv ~/.npmrc
-  [ -f ~/.npmrc ] && mv -v ~/.npmrc-bak ~/.npmrc
+  [ -f ~/.npmrc-bak ] && mv -v ~/.npmrc-bak ~/.npmrc
 else
   echo "Unexpected registry status code: $s"
   exit 1
