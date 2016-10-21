@@ -3,16 +3,19 @@
 npm_config="spin=false progress=false color=false"
 
 echo "Starting travis-npm-publish"
+echo "Usage: travis-npm-publish [USER] [BRANCH]"
 
-case $1 in
-  "") branch=master;;
-  "tag") branch=tag;;
-  *) branch=$1;;
-esac
+user=$1
+branch=$2
+[ "$branch" == "" ] && branch=master
 
-[ "$branch" == "tag" ] \
-  && echo "Deploying builds with git tags" \
-  || echo "Deploying builds on branch $branch"
+[ "$user" == "" ] \
+  && echo "Publishing for all github users" \
+  || echo "Publishing only for github user $user"
+
+[ "$branch" == "tags" ] \
+  && echo "Publishing builds with git tags" \
+  || echo "Publishing builds on branch $branch"
 
 echo -e "Using npm config:\n${npm_config// /\n}"
 
@@ -35,12 +38,17 @@ echo "Deployment of $n@$v"
 [ "$NPM_AUTH" == "" ] && skip "without NPM_AUTH"
 [ "$TRAVIS_PULL_REQUEST" == false ] || skip "for pull request"
 
-if [ "$branch" == "tag" ]; then
+if [ "$branch" == "tags" ]; then
   [ "TEST${TRAVIS_TAG//v/}" == $v ] || skip "for tag $TRAVIS_TAG"
 else
   [ "$TRAVIS_BRANCH" == "$branch" ] || skip "on branch $TRAVIS_BRANCH"
 fi
-# [ "$TRAVIS_REPO_SLUG" == rsp/$n ] || skip "in repo $TRAVIS_REPO_SLUG"
+
+if [ "$user" == "" ]; then
+  [ "${TRAVIS_REPO_SLUG//.*\//}" == "$n" ] || skip "in repo $TRAVIS_REPO_SLUG"
+else
+  [ "$TRAVIS_REPO_SLUG" == "$user/$n" ] || skip "in repo $TRAVIS_REPO_SLUG"
+fi
 
 u=https://registry.npmjs.org/$n/$v
 s=`curl -s -o /dev/null -w "%{http_code}" $u`
