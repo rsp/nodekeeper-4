@@ -1,16 +1,17 @@
 #!/bin/bash
 
+npm_config="spin=false progress=false color=false"
+
+echo "`date -Is` Starting travis-npm-publish-branch"
+echo -e "Using npm config:\n${npm_config// /\n}"
+
 skip() {
     echo "Skipping deployment" $1; exit 0
 }
 
-n=`node -e 'console.log(require("./index").name)'`
-v=`node -e 'console.log(require("./index").version)'`
+n=`node -e 'console.log(require("./package.json").name)'`
+v=`node -e 'console.log(require("./package.json").version)'`
 echo "Deployment of $n@$v"
-
-echo ===
-cat ~/.npmrc
-echo ===
 
 [ "$TRAVIS" == true ] || skip "not in Travis"
 [ "$TRAVIS_REPO_SLUG" == rsp/$n ] || skip "in repo $TRAVIS_REPO_SLUG"
@@ -27,7 +28,7 @@ if [ "$s" == 200 ]; then
 elif [ "$s" == 404 ]; then
   echo "Publishing $n@$v ..."
   [ -f ~/.npmrc ] && mv -v ~/.npmrc ~/.npmrc-bak
-  echo -e "spin=false\nprogress=false\n$NPM_AUTH" > ~/.npmrc
+  echo -e "${npm_config// /\n}\n$NPM_AUTH" > ~/.npmrc
   npm publish
   rm -fv ~/.npmrc
   [ -f ~/.npmrc ] && mv -v ~/.npmrc-bak ~/.npmrc
