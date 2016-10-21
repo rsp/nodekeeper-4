@@ -23,4 +23,5 @@ elif [ "$s" == 404 ]; then
   exit 1
 else
   echo "Publishing $n@$v ..."
+  NPM_API_KEY=$NPMTOKEN npm publish
 fi
