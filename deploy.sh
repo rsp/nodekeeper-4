@@ -2,7 +2,7 @@
 
 npm_config="spin=false progress=false color=false"
 
-echo "`date -Is` Starting travis-npm-publish-branch"
+echo "Starting travis-npm-publish-branch"
 echo -e "Using npm config:\n${npm_config// /\n}"
 
 skip() {
@@ -14,7 +14,7 @@ commands() {
   done
 }
 
-commands node npm testing curl
+commands node npm curl
 [ -f ~/.npmrc-bak ] && skip "with ~/.npmrc-bak already present"
 [ -f package.json ] || skip "without package.json"
 n=`node -e 'console.log(require("./package.json").name)'`
